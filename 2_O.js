@@ -2,17 +2,41 @@
 
 // Какието классы должны быть доступны для разширения но закрыты для модифицирования
 
-class Square {
-    constructor(size) {
-        this.type = 'Square';
-        this.size = size;
+
+class Shape {
+    area() {
+        throw new Error('Area method should be implemented')
     }
 }
 
-class Circle {
+class Square extends Shape{
+    constructor(size) {
+        super();
+        this.size = size;
+    }
+    area() {
+        return this.size ** 2
+    }
+}
+
+class Circle extends Shape{
     constructor(radius) {
-        this.type = 'Circle';
+        super();
         this.radius = radius
+    }
+    area() {
+        return (this.radius ** 2) * Math.PI
+    }
+}
+
+class Rect extends Shape{
+    constructor(width, height) {
+        super();
+        this.width = width;
+        this.height = height
+    }
+    area() {
+        return this.width + this.height
     }
 }
 
@@ -23,12 +47,8 @@ class AreaCalculator {
 
     sum() {
         return this.shapes.reduce((acc, shape) => {
-            if(shape.type === 'Circle') {
-                acc += (shape.radius ** 2) * Math.PI
-            } else if (shape.type === 'Square') {
-                acc += shape.size ** 2
-            }
-            return acc;
+            acc += shape.area();
+            return acc
         }, 0)
     }
 
@@ -37,7 +57,8 @@ class AreaCalculator {
 const calc = new AreaCalculator([
     new Square(10),
     new Circle(1),
-    new Circle(5)
+    new Circle(5),
+    new Rect(10, 20)
 ]);
 
 console.log('----------------------- ');
