@@ -56,16 +56,24 @@ openSecretDoor(new Backend());
 
 
 class Component {
+    isComponent = true
+}
+
+class ComponentWithTemplate extends Component{
     render() {
         return `<div>Component</div>`
     }
 }
 
-class HeaderComponent extends Component{
+class HigherOrderComponent extends Component {
+
+}
+
+class HeaderComponent extends ComponentWithTemplate{
     onInit(){}
 }
 
-class FooterComponent extends Component{
+class FooterComponent extends ComponentWithTemplate{
     afterInit() {}
 }
 
@@ -75,7 +83,7 @@ class FooterComponent extends Component{
 // По существу, HOC не являются частью React API.
 // Они - паттерн, который вытекает из композиционной природы React.
 // Они не имеют в себе метот Render. Они принимат на вход класс, а на выход выдают другой мадифицированный класс
-class HOC extends Component{
+class HOC extends HigherOrderComponent{
     render() { // ЭТО НАРУШЕНИЕ ПРИНЦИПА: Liskov substitution principle
         throw new Error ('Render is impossible here')
     }
@@ -91,4 +99,6 @@ function RenderComponent(component) {
 
 RenderComponent(new HeaderComponent());
 RenderComponent(new FooterComponent());
-RenderComponent(new HOC());
+// Что бы выполнялся Liskov substitution principle выполнение следующей строки не возможно, потому её убираем:
+//RenderComponent(new HOC());
+// Теперь код примера №2 не нарушает Liskov substitution principle
