@@ -8,6 +8,7 @@
 // #########################################################
 //                      ПРИМЕР 1
 // #########################################################
+/*
 class Person {
 }
 
@@ -45,3 +46,49 @@ openSecretDoor(new Frontend());
 openSecretDoor(new Backend());
 // openSecretDoor(new PersonFromDifferentCompany()); // The should be member
 // То есть, суть сводится к тому, что мы сами должны правильно выбирать нужную обстракцию (слои) для extends
+*/
+
+
+// #########################################################
+//                      ПРИМЕР 2
+// #########################################################
+
+
+
+class Component {
+    render() {
+        return `<div>Component</div>`
+    }
+}
+
+class HeaderComponent extends Component{
+    onInit(){}
+}
+
+class FooterComponent extends Component{
+    afterInit() {}
+}
+
+// это Higher Order Component
+// Компонент более высокого порядка (в документации Higher-Order Components – сокращенно HOC)
+// - это продвинутая техника в React для повторного использования логики компонента.
+// По существу, HOC не являются частью React API.
+// Они - паттерн, который вытекает из композиционной природы React.
+// Они не имеют в себе метот Render. Они принимат на вход класс, а на выход выдают другой мадифицированный класс
+class HOC extends Component{
+    render() { // ЭТО НАРУШЕНИЕ ПРИНЦИПА: Liskov substitution principle
+        throw new Error ('Render is impossible here')
+    }
+    wrapComponent (component) {
+        component.wrapped = true;
+        return component;
+    }
+}
+
+function RenderComponent(component) {
+    console.log(component.render())
+}
+
+RenderComponent(new HeaderComponent());
+RenderComponent(new FooterComponent());
+RenderComponent(new HOC());
