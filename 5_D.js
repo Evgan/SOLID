@@ -21,21 +21,42 @@ class LocalStorage {
     }
 }
 
-class DataBase {
+class FetchClient {
     constructor() {
-        // ПРишли и сказали что тепереь вместо fetch нужно тянуть данные из localStorage,
-        // пришлось внеосить след изменения:
-        // this.fetch = new Fetch() // ЭТО НАРУШЕНИЕ ПРИНЦИПА "Dependency inversion principle"
-        this.localStorage = new LocalStorage() // ЭТО НАРУШЕНИЕ ПРИНЦИПА "Dependency inversion principle"
+        this.fetch = new Fetch('endpoint.cpm');
     }
 
-    getData() {
-        // ПРишли и сказали что тепереь вместо fetch нужно тянуть данные из localStorage,
-        // пришлось внеосить след изменения:
-        // return this.fetch.request('server-end-point.com') // ЭТО НАРУШЕНИЕ ПРИНЦИПА "Dependency inversion principle"
-        return this.localStorage.get('key') // ЭТО НАРУШЕНИЕ ПРИНЦИПА "Dependency inversion principle"
+    clientGet() {
+        return this.fetch.request()
     }
 }
 
-const db = new DataBase();
-console.log('----------------------- ', db.getData());
+class LocalStorageClient {
+    constructor() {
+        this.localStorage = new LocalStorage();
+    }
+
+    clientGet(key) {
+        return this.localStorage.get(key)
+    }
+}
+
+class DataBase {
+    constructor(client) {
+        this.client = client
+    }
+
+    getData(key) {
+        return this.client.clientGet(key)
+    }
+}
+
+const db = new DataBase(new FetchClient());
+console.log(db.getData('rad'));
+// если потом говорят: А  давай теперь данные из local storage брать, то просто делаем следующее:
+const db2 = new DataBase(new LocalStorageClient());
+console.log(db2.getData('eee'));
+// То есть мы не меняем сущность верхнего уровня,
+// что в результате ИСКЛЮЧИТ правки в сущнастях которые его используют
+
+
